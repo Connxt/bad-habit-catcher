@@ -1,7 +1,7 @@
 {
-  "name": "catcher",
+  "name": "goal-catcher",
   "version": "1.1.1",
-  "description": "catcher: An Ionic project",
+  "description": "goal-catcher: An Ionic project",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",
