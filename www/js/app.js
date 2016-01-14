@@ -1,15 +1,14 @@
 (function () {
 	angular.module("bad-habit-catcher", [
 		"bad-habit-catcher.controllers",
-		"bad-habit-catcher.controllers",
-		"bad-habit-catcher.controllers",
-		"bad-habit-catcher.controllers",
-		"bad-habit-catcher.controllers",
+		"bad-habit-catcher.directives",
+		"bad-habit-catcher.filters",
+		"bad-habit-catcher.services",
 		"ionic"
 	])
 
-	.run(function($ionicPlatform) {
-		$ionicPlatform.ready(function() {
+	.run(function ($ionicPlatform, Storage) {
+		$ionicPlatform.ready(function () {
 			if(window.cordova && window.cordova.plugins.Keyboard) {
 				// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
 				// for form inputs)
@@ -23,6 +22,8 @@
 			if(window.StatusBar) {
 				StatusBar.styleDefault();
 			}
+
+			Storage.init();
 		});
 	})
 
