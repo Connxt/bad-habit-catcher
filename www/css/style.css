@@ -1,1 +1,8 @@
-/* Empty. Add your own CSS if you like */
+.bar-header {
+	border-bottom-width: 0px;
+}
+
+.bg-dark {
+	background-color: #444444;
+	color: white;
+}
