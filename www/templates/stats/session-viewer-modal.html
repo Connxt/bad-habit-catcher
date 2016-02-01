@@ -1,0 +1,13 @@
+<div class="modal ion-nifty-modal" ng-click="closeSessionViewer()">
+	<div class="ion-modal-content-custom">
+		<div class="center-chart">
+			<canvas
+				id="bar"
+				class="chart chart-bar"
+				chart-data="selectedSessionData.data"
+				chart-labels="selectedSessionData.labels"
+				chart-series="selectedSessionData.series"
+			></canvas>
+		</div>
+	</div>
+</div>

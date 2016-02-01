@@ -1,0 +1,17 @@
+<ion-view view-title="{{ viewTitle }}" class="bg-dark">
+	<ion-content overflow-scroll="true" has-header="true">
+		<div class="card">
+			<div class="item item-divider">All Sessions</div>
+			<div class="item">
+				<canvas
+					id="bar"
+					class="chart chart-bar"
+					chart-data="sessionsData.data"
+					chart-labels="sessionsData.labels"
+					chart-series="sessionsData.series"
+					chart-click="openSessionViewer"
+				></canvas>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

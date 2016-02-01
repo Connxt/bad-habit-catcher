@@ -1,5 +1,14 @@
 <ion-view view-title="Stats" class="bg-dark">
+	<ion-nav-buttons side="secondary">
+		<a class="button button-icon icon ion-android-refresh" ng-click="refresh()"></a>
+	</ion-nav-buttons>
 	<ion-content overflow-scroll="true" has-header="true">
-		
+		<div class="list">
+			<div class="item item-divider">Bad Habits:</div>
+			<a class="item item-icon-right bg-dark" href="#/app/bad-habit-stats/{{ badHabit.id }}/{{ badHabit.name }}" ng-repeat="badHabit in badHabits">
+				{{ badHabit.name }}
+				<i class="icon ion-ios-arrow-right"></i>
+			</a>
+		</div>
 	</ion-content>
 </ion-view>

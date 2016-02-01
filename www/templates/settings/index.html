@@ -1,5 +1,44 @@
 <ion-view view-title="Settings" class="bg-dark">
-	<ion-content overflow-scroll="true" has-header="true">
-		
+	<ion-nav-buttons side="secondary">
+		<a class="button" ng-show="sessionService.noSession" ng-click="addSession()">Done</a>
+	</ion-nav-buttons>
+	
+
+	<ion-content overflow-scroll="true" has-header="true" class="padding">
+		<!-- kung walang session -->
+		<div ng-show="sessionService.noSession">
+			<div class="list card">
+				<div class="item item-divider">Choose a trait:</div>
+				<ion-radio ng-model="selected.badHabit" ng-repeat="badHabit in badHabits" ng-value="badHabit">{{ badHabit.name }}</ion-radio>
+			</div>
+		</div>
+
+		<!-- kung may session -->
+		<div ng-show="!sessionService.noSession">
+			<div class="card">
+				<div class="item item-divider">Current Session:</div>
+				<div class="item item-text-wrap">
+					You are currently improving:<br />
+					<strong>{{ currentBadHabit.name.toUpperCase() }}</strong>
+				</div>
+				<div class="item item-text-wrap">
+					Time Left: <strong>{{ sessionService.timeLeft.get().hours }}</strong> hrs <strong>{{ sessionService.timeLeft.get().minutes }}</strong> mins <strong>{{ sessionService.timeLeft.get().seconds }}</strong> seconds
+				</div>
+			</div>
+			<button class="button button-tap button-block button-assertive" ng-click="endSession()">End Session</button>
+		</div>
+
+		<div class="list">
+			<div class="item item-divider">Settings:</div>
+			<ion-toggle ng-model="settings.vibrateOnTap" toggle-class="toggle-assertive">Vibrate-On-Tap</ion-toggle>
+			<ion-toggle ng-model="settings.exitOnTap" toggle-class="toggle-assertive">Exit-On-Tap</ion-toggle>
+		</div>
+
+		<!-- <div class="list">
+			<label class="item item-input item-select">
+				<div class="input-label">Bad Habit</div>
+				<select ng-model="selectedBadHabit" ng-options="badHabit.name for badHabit in badHabits" ng-change="changeBadHabit(selectedBadHabit)"></select>
+			</label>
+		</div> -->
 	</ion-content>
 </ion-view>

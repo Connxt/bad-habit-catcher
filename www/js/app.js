@@ -6,10 +6,11 @@
 		"bad-habit-catcher.services",
 		"ionic",
 		"ngResource",
-		"ionic-native-transitions"
+		"ngCordova",
+		"chart.js"
 	])
 
-	.run(function ($ionicPlatform, Storage) {
+	.run(function ($ionicPlatform, Storage, SessionService) {
 		$ionicPlatform.ready(function () {
 			if(window.cordova && window.cordova.plugins.Keyboard) {
 				// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -25,33 +26,50 @@
 				StatusBar.styleDefault();
 			}
 
-			Storage.init();
+			Storage.init().then(function () {
+				Storage.sessions.getCurrent().then(function (currentSession) {
+					SessionService.init(currentSession);
+					if(Object.keys(currentSession).length >= 1) {
+						SessionService.noSession = false;
+					}
+					else {
+						SessionService.noSession = true;
+					}
+				});
+			});
 		});
 	})
 
-	.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider, $ionicNativeTransitionsProvider) {
-		$ionicConfigProvider.scrolling.jsScrolling(false);
+	.config(function ($compileProvider, $stateProvider, $urlRouterProvider, $ionicConfigProvider, ChartJsProvider) {
+		var isProduction = false;
+		if(isProduction) {
+			$compileProvider.debugInfoEnabled(false);
+		}
 
-		$ionicNativeTransitionsProvider.setDefaultOptions({
-			duration: 700, // in milliseconds (ms), default 400,
-			slowdownfactor: 4, // overlap views (higher number is more) or no overlap (1), default 4
-			iosdelay: -1, // ms to wait for the iOS webview to update before animation kicks in, default -1
-			androiddelay: -1, // same as above but for Android, default -1
-			winphonedelay: -1, // same as above but for Windows Phone, default -1,
-			fixedPixelsTop: 0, // the number of pixels of your fixed header, default 0 (iOS and Android)
-			fixedPixelsBottom: 0, // the number of pixels of your fixed footer (f.i. a tab bar), default 0 (iOS and Android)
-			triggerTransitionEvent: "$ionicView.afterEnter", // internal ionic-native-transitions option
-			backInOppositeDirection: false // Takes over default back transition and state back transition to use the opposite direction transition to go back
-		});
-		$ionicNativeTransitionsProvider.setDefaultTransition({
-			type: "slide",
-			direction: "left"
-		});
-		$ionicNativeTransitionsProvider.setDefaultBackTransition({
-			type: "slide",
-			direction: "right"
-		});
-		$ionicNativeTransitionsProvider.enable(true, false);
+		$ionicConfigProvider.scrolling.jsScrolling(false);
+		$ionicConfigProvider.views.forwardCache(true);
+
+		ChartJsProvider.setOptions({ responsive: true });
+		// $ionicNativeTransitionsProvider.setDefaultOptions({
+		// 	duration: 300, // in milliseconds (ms), default 400,
+		// 	slowdownfactor: 4, // overlap views (higher number is more) or no overlap (1), default 4
+		// 	iosdelay: -1, // ms to wait for the iOS webview to update before animation kicks in, default -1
+		// 	androiddelay: -1, // same as above but for Android, default -1
+		// 	winphonedelay: -1, // same as above but for Windows Phone, default -1,
+		// 	fixedPixelsTop: 0, // the number of pixels of your fixed header, default 0 (iOS and Android)
+		// 	fixedPixelsBottom: 0, // the number of pixels of your fixed footer (f.i. a tab bar), default 0 (iOS and Android)
+		// 	triggerTransitionEvent: "$ionicView.afterEnter", // internal ionic-native-transitions option
+		// 	backInOppositeDirection: false // Takes over default back transition and state back transition to use the opposite direction transition to go back
+		// });
+		// $ionicNativeTransitionsProvider.setDefaultTransition({
+		// 	type: "slide",
+		// 	direction: "left"
+		// });
+		// $ionicNativeTransitionsProvider.setDefaultBackTransition({
+		// 	type: "slide",
+		// 	direction: "right"
+		// });
+		// $ionicNativeTransitionsProvider.enable(true, false);
 
 		$stateProvider
 		.state("app", {
@@ -85,8 +103,72 @@
 					controller: "StatsController"
 				}
 			}
+		})
+		.state("app.bad-habit-stats", {
+			url: "/bad-habit-stats/:badHabitId/:badHabitName",
+			cache: false,
+			views: {
+				"main": {
+					templateUrl: "templates/stats/bad-habit-stats.html",
+					controller: "BadHabitStatsController"
+				}
+			}
 		});
 
 		$urlRouterProvider.otherwise("/app/main");
-	});
+	})
+
+	.constant("StorageConfig", {
+		name: "bad_habit_catcher.db",
+		version: "1.0",
+		description: "asd",
+		tables: [{
+			name: "bad_habits",
+			columns: [
+				{ name: "id", type: "integer primary key" },
+				{ name: "name", type: "text" }
+			],
+			data: [
+				{ id: "1", name: "anger" },
+				{ id: "2", name: "slander" },
+				{ id: "3", name: "lustful thoughts" },
+				{ id: "4", name: "physical violence" },
+				{ id: "5", name: "breaking promises" },
+				{ id: "6", name: "lying" }
+			]
+		}, {
+			name: "sessions",
+			columns: [
+				{ name: "id", type: "integer primary key" },
+				{ name: "bad_habit_id", type: "integer" },
+				{ name: "date_started", type: "text" },
+				{ name: "date_finished", type: "text" }
+			]
+		}, {
+			name: "taps",
+			columns: [
+				{ name: "id", type: "integer primary key" },
+				{ name: "session_id", type: "integer" },
+				{ name: "date_tapped", type: "text" }
+			]
+		}, {
+			name: "settings",
+			columns: [
+				{ name: "id", type: "integer primary key" },
+				{ name: "vibrate_on_tap", type: "integer" },
+				{ name: "exit_on_tap", type: "integer" }
+			],
+			data: [
+				{ id: "1", vibrate_on_tap: "1", exit_on_tap: "0" }
+			]
+		}]
+	})
+
+	.constant("DefaultSettings", {
+		vibrateOnTap: true,
+		exitOnTap: false,
+		key: "bad-habit-catcher.settings"
+	})
+
+	.constant("DaysPerSession", 7);
 })();
